@@ -5,6 +5,6 @@
 
 (e/defn Foobar []
   (e/client
-    (dom/link (dom/props {:rel :stylesheet :href "/app.css"}))
+    (dom/link (dom/props {:rel :stylesheet :href "/assets/app.css"}))
     (dom/h1
       (dom/text "Alô mamãe!"))))

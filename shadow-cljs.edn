@@ -2,6 +2,7 @@
  :nrepl {:port 9001}
  :builds {:dev {:target :browser
                 :devtools {:watch-dir "resources/public" ; live reload CSS
+                           :watch-path "/assets"
                            :hud #{:errors :progress}
                            :ignore-warnings true} ; warnings don't prevent hot-reload
                 :output-dir "resources/public/js"
