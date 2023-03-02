@@ -15,7 +15,7 @@
 
 (def router
   (ring/router
-    [["/" {:get (-> (fn [_] (resp/resource-response "index.html" {:root "public"})))}]
+    [["/" {:get (fn [_] (resp/resource-response "index.html" {:root "public"}))}]
      ["/assets/*" (ring/create-resource-handler {:root "public"})]]))
 
 (defn main [& args]
