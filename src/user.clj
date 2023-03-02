@@ -13,6 +13,12 @@
   (fn [ring-req]
     (assoc-in (next-handler ring-req) [:headers "Cache-Control"] "No-Store")))
 
+(defn wrap-electric [next-handler]
+  (fn [ring-request]
+    (if (jetty/ws-upgrade-request? ring-request)
+      (jetty/ws-upgrade-response (adapter/electric-ws-adapter (partial adapter/electric-ws-message-handler ring-request)))
+      (next-handler ring-request))))
+
 (def router
   (ring/router
     [["/" {:get (fn [_] (resp/resource-response "index.html" {:root "public"}))}]
@@ -25,13 +31,11 @@
   (jetty/run-jetty (ring/ring-handler router
                                       (fn [_] {:status 404 :body "Not found"})
                                       {:muuntaja   muutanja/instance
-                                       :middleware [no-cache middleware.muuntaja/format-middleware]})
+                                       :middleware [no-cache
+                                                    middleware.muuntaja/format-middleware
+                                                    wrap-electric]})
                    {:port       3001
-                    :join?      false
-                    :websockets {"/" (fn [ring-req]
-                                       (adapter/electric-ws-adapter
-                                         (partial adapter/electric-ws-message-handler
-                                                  ring-req)))}}))
+                    :join?      false}))
 
 (comment
   (def server (main))
